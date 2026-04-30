@@ -510,20 +510,26 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0;
-    max-width: 800px;
+    max-width: 900px;
   }
 
   .team-item {
     padding: 3rem 3rem 3rem 0;
     border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
     display: flex;
     flex-direction: column;
     gap: 1.75rem;
   }
 
-  .team-item:last-child {
+  .team-item:nth-child(even) {
     border-right: none;
     padding: 3rem 0 3rem 3rem;
+  }
+
+  .team-item:nth-last-child(1),
+  .team-item:nth-last-child(2) {
+    border-bottom: none;
   }
 
   .team-portrait {
@@ -591,7 +597,8 @@
     .approach-grid { grid-template-columns: 1fr; }
     .team-grid { grid-template-columns: 1fr; }
     .team-item { border-right: none; border-bottom: 1px solid var(--rule); padding: 2.5rem 0; }
-    .team-item:last-child { padding: 2.5rem 0; }
+    .team-item:nth-child(even) { padding: 2.5rem 0; }
+    .team-item:last-child { border-bottom: none; }
     .approach-item { border-right: none; border-bottom: 1px solid var(--rule); padding: 2rem 0; }
     .debut-inner, .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
     footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
@@ -652,17 +659,39 @@
       <p class="team-bio">His journey into AI began in philosophy — specifically with Masanao Toda's thought experiment about autonomous agents (Fungus Eaters) designed to survive alone on another planet. That question — how do you build a machine that genuinely acts in the world — pulled him through cognitive neuroscience, computer vision, and into generative AI. Now he applies the same question to cinema: how do you build something synthetic that genuinely feels.</p>
     </div>
     <div class="team-item">
-      <div class="team-portrait">L.V.</div>
+      <div class="team-portrait">LV</div>
       <div>
-        <h3 class="team-name"><em>Luisa </em>Valender.</em></h3>
+        <h3 class="team-name"><em>L.V.</em></h3>
         <p class="team-role">Creative Producer</p>
       </div>
       <p class="team-bio">Her intellectual home is the edge of language — she wrote her thesis on Wittgenstein, the philosopher who argued that what cannot be said must be shown. Cinema, for her, is the logical conclusion of that insight. Trained in philosophy and film, she built El Olvidado — The Forgotten One — from an idea into a place people chose as their own. She produces with the same instinct: find what words cannot carry, and make space for it.</p>
     </div>
+    <div class="team-item">
+      <div class="team-portrait">CN</div>
+      <div>
+        <h3 class="team-name">Clemente <em>Núñez</em></h3>
+        <p class="team-role">Screenwriter & Story Editor</p>
+      </div>
+      <p class="team-bio">He started where all good storytellers do: asking big questions — in philosophy. And ended up in the newsroom. He spent years writing about politics and culture, then serving as deputy news editor in radio and TV. A career spent finding the story inside the noise. Now he brings that instinct to the screen.</p>
+    </div>
+    <div class="team-item">
+      <div class="team-portrait">OS</div>
+      <div>
+        <h3 class="team-name">Oliver <em>Sierra</em></h3>
+        <p class="team-role">AI Engineer</p>
+      </div>
+      <p class="team-bio">He started where few engineers do: inside the human mind. Studied psychology and computer science together. His research in game theory gave him a framework for understanding systems, human or otherwise. Now he applies that to the hardest technical problem in AI cinema: making generated video that actually holds together. He is the one pushing the limits of what the machine can show.</p>
+    </div>
+    <div class="team-item">
+      <div class="team-portrait">LB</div>
+      <div>
+        <h3 class="team-name">Leslie <em>Balderas</em></h3>
+        <p class="team-role">Brand Strategist</p>
+      </div>
+      <p class="team-bio">She has always worked at the edge of strategy and intuition — where a brand stops being a logo and starts being something you remember. Founder of Lemon Studio, Leslie specializes in branding, lettering, and large-scale murals for brands that want to be felt, not just seen. Her philosophy is simple: less noise, more feeling.</p>
+    </div>
   </div>
 </section>
-
-<!-- APPROACH -->
 <section id="approach">
   <p class="section-label">Our Approach</p>
   <div class="approach-grid">
