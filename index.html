@@ -6,609 +6,843 @@
 <title>35 Labs — AI Film Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --ink: #0e0e0c;
-    --paper: #f5f2ec;
-    --warm-off: #faf8f3;
-    --accent: #b89a6a;
-    --muted: #7a7670;
-    --rule: rgba(14,14,12,0.15);
-    --serif: 'Cormorant Garamond', Georgia, serif;
-    --sans: 'Jost', sans-serif;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: 18px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* Grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.03;
-    pointer-events: none;
-    z-index: 1000;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 3rem;
-    mix-blend-mode: multiply;
-  }
-
-  .nav-logo {
-    font-family: var(--serif);
-    font-size: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink);
-    text-decoration: none;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: var(--sans);
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-
-  .nav-links a:hover { color: var(--ink); }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 3rem 5rem;
-    position: relative;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .hero-eyebrow {
-    font-family: var(--sans);
-    font-size: 0.65rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-title {
-    font-size: clamp(4rem, 10vw, 9rem);
-    font-weight: 300;
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    max-width: 14ch;
-    margin-bottom: 2.5rem;
-  }
-
-  .hero-title em {
-    font-style: italic;
-    font-weight: 300;
-    color: var(--accent);
-  }
-
-  .hero-sub {
-    font-family: var(--sans);
-    font-size: 0.75rem;
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    max-width: 40ch;
-    line-height: 2;
-  }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 2.5rem;
-    right: 3rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--sans);
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .hero-scroll-line {
-    width: 1px;
-    height: 60px;
-    background: var(--accent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.3; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(0.6); }
-  }
-
-  /* SECTION BASE */
-  section {
-    padding: 7rem 3rem;
-    border-bottom: 1px solid var(--rule);
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-
-  section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .section-label {
-    font-family: var(--sans);
-    font-size: 0.65rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 3rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--rule);
-    max-width: 60px;
-  }
-
-  /* MANIFESTO */
-  .manifesto {
-    max-width: 900px;
-  }
-
-  .manifesto-pull {
-    font-size: clamp(1.8rem, 3.5vw, 3rem);
-    font-weight: 300;
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    margin-bottom: 3rem;
-  }
-
-  .manifesto-pull em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .manifesto-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem 4rem;
-    font-size: 1.05rem;
-    color: var(--muted);
-    line-height: 1.85;
-    font-weight: 400;
-  }
-
-  /* APPROACH */
-  .approach-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-  }
-
-  .approach-item {
-    padding: 3rem;
-    border-right: 1px solid var(--rule);
-    transition: background 0.3s;
-  }
-
-  .approach-item:last-child { border-right: none; }
-  .approach-item:hover { background: rgba(184,154,106,0.04); }
-
-  .approach-number {
-    font-family: var(--sans);
-    font-size: 0.6rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    margin-bottom: 1.5rem;
-  }
-
-  .approach-title {
-    font-size: 1.6rem;
-    font-weight: 400;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-    margin-bottom: 1rem;
-    color: var(--ink);
-  }
-
-  .approach-title em { font-style: italic; }
-
-  .approach-body {
-    font-size: 1rem;
-    color: var(--muted);
-    line-height: 1.85;
-    font-family: var(--sans);
-    font-weight: 300;
-  }
-
-  /* DEBUT */
-  .debut {
-    background: var(--ink);
-    color: var(--paper);
-    --rule: rgba(245,242,236,0.12);
-  }
-
-  .debut .section-label {
-    color: var(--accent);
-  }
-
-  .debut-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    align-items: center;
-  }
-
-  .debut-frame {
-    aspect-ratio: 16/9;
-    border: 1px solid rgba(184,154,106,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .debut-frame::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(184,154,106,0.08) 0%, transparent 70%);
-  }
-
-  .debut-frame-label {
-    font-family: var(--sans);
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(184,154,106,0.6);
-  }
-
-  .debut-corner {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-color: rgba(184,154,106,0.4);
-    border-style: solid;
-  }
-
-  .debut-corner.tl { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
-  .debut-corner.tr { top: 12px; right: 12px; border-width: 1px 1px 0 0; }
-  .debut-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 1px 1px; }
-  .debut-corner.br { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
-
-  .debut-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: 300;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-    color: var(--paper);
-  }
-
-  .debut-title em { font-style: italic; color: var(--accent); }
-
-  .debut-text {
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    font-weight: 300;
-    line-height: 1.9;
-    color: rgba(245,242,236,0.6);
-    margin-bottom: 2.5rem;
-  }
-
-  .debut-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--sans);
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(184,154,106,0.3);
-    padding: 0.75rem 1.5rem;
-  }
-
-  .debut-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  /* CONTACT */
-  .contact-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    align-items: start;
-  }
-
-  .contact-title {
-    font-size: clamp(2.5rem, 5vw, 5rem);
-    font-weight: 300;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-  }
-
-  .contact-title em { font-style: italic; color: var(--accent); }
-
-  .contact-sub {
-    font-family: var(--sans);
-    font-size: 0.8rem;
-    font-weight: 300;
-    color: var(--muted);
-    line-height: 1.9;
-    letter-spacing: 0.02em;
-  }
-
-  .contact-form { display: flex; flex-direction: column; gap: 0; }
-
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    border-bottom: 1px solid var(--rule);
-    padding: 1.25rem 0;
-    transition: border-color 0.3s;
-  }
-
-  .form-field:focus-within { border-color: var(--accent); }
-
-  .form-field label {
-    font-family: var(--sans);
-    font-size: 0.6rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
-
-  .form-field input,
-  .form-field textarea {
-    background: none;
-    border: none;
-    outline: none;
-    font-family: var(--serif);
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--ink);
-    width: 100%;
-    resize: none;
-  }
-
-  .form-field input::placeholder,
-  .form-field textarea::placeholder {
-    color: rgba(122,118,112,0.4);
-  }
-
-  .form-submit {
-    margin-top: 2.5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    font-family: var(--sans);
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--ink);
-    background: none;
-    border: 1px solid var(--ink);
-    padding: 1rem 2rem;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-    align-self: flex-start;
-  }
-
-  .form-submit:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
-
-  .form-arrow { transition: transform 0.3s; }
-  .form-submit:hover .form-arrow { transform: translateX(4px); }
-
-  /* FOOTER */
-  footer {
-    padding: 2rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    opacity: 0;
-    animation: fadeIn 1s 1.5s forwards;
-  }
-
-  @keyframes fadeIn { to { opacity: 1; } }
-
-  .footer-copy {
-    font-family: var(--sans);
-    font-size: 0.65rem;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-  }
-
-  .footer-location {
-    font-family: var(--sans);
-    font-size: 0.65rem;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-  }
-
-  /* HERO ANIMATE */
-  .hero-eyebrow, .hero-title, .hero-sub {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  .hero-eyebrow { animation: riseIn 0.9s 0.3s forwards; }
-  .hero-title   { animation: riseIn 1s 0.5s forwards; }
-  .hero-sub     { animation: riseIn 0.9s 0.8s forwards; }
-  .hero-scroll  { opacity: 0; animation: fadeIn 1s 1.2s forwards; }
-
-  @keyframes riseIn {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* TEAM */
-  .team-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0;
-    max-width: 900px;
-  }
-
-  .team-item {
-    padding: 3rem 3rem 3rem 0;
-    border-right: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-  }
-
-  .team-item:nth-child(even) {
-    border-right: none;
-    padding: 3rem 0 3rem 3rem;
-  }
-
-  .team-item:nth-last-child(1),
-  .team-item:nth-last-child(2) {
-    border-bottom: none;
-  }
-
-  .team-portrait {
-    width: 80px;
-    height: 80px;
-    border: 1px solid var(--rule);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    position: relative;
-    transition: border-color 0.3s;
-  }
-
-  .team-item:hover .team-portrait {
-    border-color: var(--accent);
-  }
-
-  .team-portrait::before {
-    content: '';
-    position: absolute;
-    inset: 4px;
-    border: 1px solid rgba(184,154,106,0.15);
-  }
-
-  .team-name {
-    font-size: 1.8rem;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-    color: var(--ink);
-    margin-bottom: 0.4rem;
-  }
-
-  .team-name em { font-style: italic; }
-
-  .team-role {
-    font-family: var(--sans);
-    font-size: 0.65rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .team-bio {
-    font-family: var(--serif);
-    font-size: 1.05rem;
-    font-weight: 400;
-    color: var(--muted);
-    line-height: 1.85;
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    nav { padding: 1.25rem 1.5rem; }
-    .nav-links { display: none; }
-    .hero { padding: 0 1.5rem 4rem; }
-    section { padding: 4rem 1.5rem; }
-    .manifesto-body { grid-template-columns: 1fr; }
-    .approach-grid { grid-template-columns: 1fr; }
-    .team-grid { grid-template-columns: 1fr; }
-    .team-item { border-right: none; border-bottom: 1px solid var(--rule); padding: 2.5rem 0; }
-    .team-item:nth-child(even) { padding: 2.5rem 0; }
-    .team-item:last-child { border-bottom: none; }
-    .approach-item { border-right: none; border-bottom: 1px solid var(--rule); padding: 2rem 0; }
-    .debut-inner, .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
-    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
-  }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0e0e18;
+  --surface:   #161622;
+  --border:    rgba(255,255,255,0.10);
+  --text:      #f0f0ea;
+  --muted:     #8888a0;
+  --accent:    #aaff00;
+  --warm:      #e05535;
+  --glow-g:    rgba(170,255,0,0.10);
+  --glow-w:    rgba(224,85,53,0.07);
+  --sans:      'Syne', sans-serif;
+  --mono:      'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Noise layer */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 900;
+}
+
+/* Scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(255,255,255,0.007) 2px, rgba(255,255,255,0.007) 4px
+  );
+  pointer-events: none;
+  z-index: 899;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 3rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(6,6,9,0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.nav-logo {
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-logo .logo-num {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 3rem 5.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&q=80&auto=format');
+  background-size: cover;
+  background-position: center 30%;
+  filter: brightness(0.18) saturate(0.4);
+  will-change: transform;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(6,6,9,0.5) 0%,
+    rgba(6,6,9,0.2) 35%,
+    rgba(6,6,9,0.75) 70%,
+    rgba(6,6,9,1) 100%
+  );
+}
+
+.hero-glow-a {
+  position: absolute;
+  top: 5%; right: 5%;
+  width: 55vw; height: 55vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-g) 0%, transparent 65%);
+  pointer-events: none;
+  animation: floatA 12s ease-in-out infinite alternate;
+}
+
+.hero-glow-b {
+  position: absolute;
+  bottom: 15%; left: -8%;
+  width: 38vw; height: 38vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-w) 0%, transparent 65%);
+  pointer-events: none;
+  animation: floatB 16s ease-in-out infinite alternate;
+}
+
+@keyframes floatA {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(2%,4%) scale(1.08); }
+}
+
+@keyframes floatB {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(-3%,-4%) scale(0.94); }
+}
+
+.hero-watermark {
+  position: absolute;
+  bottom: -8%;
+  right: 0;
+  font-size: clamp(18rem, 28vw, 42rem);
+  font-weight: 800;
+  line-height: 0.8;
+  color: rgba(255,255,255,0.018);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.06em;
+}
+
+.hero-status {
+  position: absolute;
+  top: 6rem; right: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  z-index: 10;
+  border: 1px solid var(--border);
+  padding: 0.55rem 1rem;
+  background: rgba(13,13,22,0.65);
+  backdrop-filter: blur(12px);
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 6px var(--accent); opacity: 1; }
+  50%       { box-shadow: 0 0 18px var(--accent), 0 0 36px rgba(170,255,0,0.25); opacity: 0.6; }
+}
+
+.hero-content { position: relative; z-index: 10; }
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 300;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 2rem; height: 1px;
+  background: var(--accent);
+}
+
+.hero-title {
+  font-size: clamp(4rem, 9.5vw, 11rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  color: var(--text);
+  max-width: 14ch;
+  margin-bottom: 3.5rem;
+  text-transform: uppercase;
+}
+
+.hero-title .hl {
+  color: var(--accent);
+  display: block;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.hero-sub {
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  line-height: 2.1;
+}
+
+.hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-scroll-line {
+  width: 1px; height: 52px;
+  background: linear-gradient(to bottom, transparent, var(--accent));
+  animation: scrollLine 2.2s ease-in-out infinite;
+}
+
+@keyframes scrollLine {
+  0%,100% { opacity: 0.25; transform: scaleY(0.7) translateY(-6px); }
+  50%      { opacity: 1;    transform: scaleY(1)   translateY(0); }
+}
+
+/* ─── TICKER BAND ─── */
+.ticker-band {
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.85rem 0;
+}
+
+.ticker-inner {
+  display: flex;
+  gap: 0;
+  width: max-content;
+  animation: tickerScroll 30s linear infinite;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 2rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ticker-item .tick-accent {
+  color: var(--accent);
+  margin-right: 2rem;
+}
+
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ─── SECTION BASE ─── */
+section {
+  padding: 8rem 3rem;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 300;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.section-label .lnum { color: var(--muted); }
+
+.section-label::after {
+  content: '';
+  height: 1px;
+  width: 40px;
+  background: var(--border);
+}
+
+/* ─── MANIFESTO ─── */
+.manifesto-pull {
+  font-size: clamp(2rem, 4.2vw, 4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: var(--text);
+  max-width: 20ch;
+  margin-bottom: 4rem;
+  text-transform: uppercase;
+}
+
+.manifesto-pull em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.manifesto-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 5rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.95;
+  border-top: 1px solid var(--border);
+  padding-top: 3rem;
+}
+
+/* ─── APPROACH ─── */
+.approach-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  border: 1px solid var(--border);
+}
+
+.approach-item {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+
+.approach-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 0% 100%, var(--glow-g), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.approach-item:hover::before { opacity: 1; }
+
+.approach-item::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.approach-item:hover::after { transform: scaleX(1); }
+.approach-item:last-child { border-right: none; }
+
+.approach-number {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 2.5rem;
+  display: block;
+}
+
+.approach-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.approach-title em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.approach-body {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.9;
+}
+
+/* ─── TEAM ─── */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  border: 1px solid var(--border);
+}
+
+.team-item {
+  padding: 2.5rem 1.75rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+
+.team-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.35s ease;
+}
+
+.team-item:hover::after { transform: scaleX(1); }
+.team-item:hover { background: rgba(170,255,0,0.025); }
+.team-item:nth-child(3n) { border-right: none; }
+.team-item:nth-last-child(-n+3) { border-bottom: none; }
+
+.team-portrait {
+  width: 56px; height: 56px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: var(--surface);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.team-item:hover .team-portrait {
+  border-color: var(--accent);
+  box-shadow: 0 0 18px rgba(170,255,0,0.18);
+}
+
+.team-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.team-role {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.team-bio {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.85;
+  flex: 1;
+}
+
+/* ─── DEBUT ─── */
+.debut-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.debut-frame {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.debut-frame-bg {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(135deg, var(--glow-g) 0%, transparent 55%),
+    linear-gradient(225deg, var(--glow-w) 0%, transparent 55%);
+}
+
+/* Grid overlay inside frame */
+.debut-frame-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Animated scan */
+.debut-scan {
+  position: absolute;
+  left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+  animation: scan 3.5s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes scan {
+  0%   { top: 0%;   opacity: 0; }
+  5%   { opacity: 0.7; }
+  95%  { opacity: 0.7; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.debut-corner {
+  position: absolute;
+  width: 18px; height: 18px;
+}
+.debut-corner.tl { top:1rem;left:1rem; border-top:1px solid var(--accent); border-left:1px solid var(--accent); }
+.debut-corner.tr { top:1rem;right:1rem; border-top:1px solid var(--accent); border-right:1px solid var(--accent); }
+.debut-corner.bl { bottom:1rem;left:1rem; border-bottom:1px solid var(--accent); border-left:1px solid var(--accent); }
+.debut-corner.br { bottom:1rem;right:1rem; border-bottom:1px solid var(--accent); border-right:1px solid var(--accent); }
+
+.debut-center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.debut-play {
+  width: 48px; height: 48px;
+  border: 1px solid rgba(170,255,0,0.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1rem;
+  padding-left: 3px;
+  opacity: 0.5;
+}
+
+.debut-frame-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.debut-title {
+  font-size: clamp(1.8rem,3.2vw,3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.debut-title em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.debut-text {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.9;
+  margin-bottom: 2.5rem;
+  max-width: 44ch;
+}
+
+.debut-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 0.55rem 1rem;
+}
+
+.debut-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+/* ─── CONTACT ─── */
+.contact-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.contact-title {
+  font-size: clamp(2rem,3.8vw,4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.contact-title em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.contact-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.9;
+  max-width: 40ch;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field {
+  border: 1px solid var(--border);
+  border-bottom: none;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.form-field:last-of-type { border-bottom: 1px solid var(--border); }
+
+.form-field:focus-within { background: rgba(255,255,255,0.02); }
+
+.form-field:focus-within::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+.form-field label {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-field input,
+.form-field textarea {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  width: 100%;
+  resize: none;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: rgba(100,100,122,0.45);
+}
+
+.form-submit {
+  margin-top: 1.25rem;
+  padding: 1rem 1.5rem;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s;
+}
+
+.form-submit:hover { background: #c6ff22; }
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy,
+.footer-loc {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero { padding: 0 1.5rem 4rem; }
+  .hero-status { display: none; }
+  section { padding: 5rem 1.5rem; }
+  .manifesto-body { grid-template-columns: 1fr; }
+  .approach-grid { grid-template-columns: 1fr; }
+  .approach-item { border-right: none; border-bottom: 1px solid var(--border); }
+  .approach-item:last-child { border-bottom: none; }
+  .team-grid { grid-template-columns: 1fr 1fr; }
+  .team-item { border-bottom: 1px solid var(--border); }
+  .team-item:nth-child(2n) { border-right: none; }
+  .team-item:last-child { border-bottom: none; }
+  .debut-inner, .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+  footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+}
+
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">35 Labs</a>
+  <a href="#" class="nav-logo">
+    <span class="logo-num">35</span> Labs
+  </a>
   <ul class="nav-links">
     <li><a href="#manifesto">About</a></li>
     <li><a href="#team">Team</a></li>
@@ -616,116 +850,173 @@
     <li><a href="#debut">Work</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <a href="#contact" class="nav-cta">Get in Touch →</a>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <p class="hero-eyebrow">AI Film Studio — Amsterdam</p>
-  <h1 class="hero-title">The <em>hidden</em> daydream.</h1>
-  <p class="hero-sub">Moving image from the latent space.<br>Stories that feel human, made otherwise.</p>
-  <div class="hero-scroll">
-    <div class="hero-scroll-line"></div>
-    Scroll
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-glow-a"></div>
+  <div class="hero-glow-b"></div>
+  <div class="hero-watermark">35</div>
+
+  <div class="hero-status">
+    <span class="status-dot"></span>
+    <span>In Production — Amsterdam, NL</span>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">AI Film Studio — Amsterdam</p>
+    <h1 class="hero-title">
+      The<br>
+      <span class="hl">Hidden</span>
+      Daydream.
+    </h1>
+    <div class="hero-meta">
+      <p class="hero-sub">
+        Moving image from the latent space.<br>
+        Stories that feel human, made otherwise.
+      </p>
+      <div class="hero-scroll">
+        <div class="hero-scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-band" aria-hidden="true">
+  <div class="ticker-inner">
+    <!-- duplicated for seamless loop -->
+    <span class="ticker-item"><span class="tick-accent">✦</span> AI-Native Cinema</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Amsterdam · Mexico City</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Latent Space Storytelling</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Diffusion Models</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Character Consistency</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Generative Film</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Pre-Production 2026</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> AI-Native Cinema</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Amsterdam · Mexico City</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Latent Space Storytelling</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Diffusion Models</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Character Consistency</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Generative Film</span>
+    <span class="ticker-item"><span class="tick-accent">✦</span> Pre-Production 2026</span>
   </div>
 </div>
 
 <!-- MANIFESTO -->
 <section id="manifesto">
-  <p class="section-label">Manifesto</p>
-  <div class="manifesto">
-    <p class="manifesto-pull">
-      Every image that ever existed <em>lives hidden</em> in mathematical space,
-      waiting to be dreamed into form.
-    </p>
-    <div class="manifesto-body">
-      <p>35 Labs is an AI-native film studio based in Amsterdam. We make animated short films using generative models — not as a gimmick, but as a genuine medium with its own aesthetic language.</p>
-      <p>We believe the frontier between human imagination and machine synthesis is where the most interesting cinema is being made right now. We are building there, frame by frame.</p>
-      <p>Our work is directed by humans who understand both the emotional logic of storytelling and the mathematical logic of diffusion models. The result is something neither could make alone.</p>
-      <p>We make cinema for the Netherlands and Mexico — two cultures with a deep appetite for visual storytelling and an openness to the genuinely new.</p>
+  <p class="section-label"><span class="lnum">01 —</span>&nbsp;Manifesto</p>
+  <p class="manifesto-pull">
+    Every image that ever existed <em>lives hidden</em> in mathematical space, waiting to be dreamed into form.
+  </p>
+  <div class="manifesto-body">
+    <p>35 Labs is an AI-native film studio based in Amsterdam. We make animated short films using generative models — not as a gimmick, but as a genuine medium with its own aesthetic language.</p>
+    <p>We believe the frontier between human imagination and machine synthesis is where the most interesting cinema is being made right now. We are building there, frame by frame.</p>
+    <p>Our work is directed by humans who understand both the emotional logic of storytelling and the mathematical logic of diffusion models. The result is something neither could make alone.</p>
+    <p>We make cinema for the Netherlands and Mexico — two cultures with a deep appetite for visual storytelling and an openness to the genuinely new.</p>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section id="approach">
+  <p class="section-label"><span class="lnum">02 —</span>&nbsp;Our Approach</p>
+  <div class="approach-grid">
+    <div class="approach-item">
+      <span class="approach-number">01 / Write First</span>
+      <h3 class="approach-title">Story Drives<br>the <em>Machine.</em></h3>
+      <p class="approach-body">Every film begins with a script and a storyboard. The story drives the machine — not the other way around. We are storytellers who happen to use AI as our camera.</p>
+    </div>
+    <div class="approach-item">
+      <span class="approach-number">02 / Consistency</span>
+      <h3 class="approach-title">Consistent<br><em>Worlds,</em> Souls.</h3>
+      <p class="approach-body">Character consistency across AI-generated shots is a hard technical problem. We solve it through fine-tuned character models and a rigorous production pipeline built in-house.</p>
+    </div>
+    <div class="approach-item">
+      <span class="approach-number">03 / Emotion</span>
+      <h3 class="approach-title">Made to<br><em>Feel</em> Something.</h3>
+      <p class="approach-body">The measure of every frame is not technical quality but emotional truth. If it doesn't move you, it doesn't ship. That standard guides everything — from the prompt to the color grade.</p>
     </div>
   </div>
 </section>
 
 <!-- TEAM -->
 <section id="team">
-  <p class="section-label">The People</p>
+  <p class="section-label"><span class="lnum">03 —</span>&nbsp;The People</p>
   <div class="team-grid">
     <div class="team-item">
       <div class="team-portrait">FS</div>
       <div>
-        <h3 class="team-name">Frank <em>Sierra</em></h3>
+        <h3 class="team-name">Frank Sierra</h3>
         <p class="team-role">Founder & Technical Director</p>
       </div>
-      <p class="team-bio">His journey into AI began in philosophy — specifically with Masanao Toda's thought experiment about autonomous agents (Fungus Eaters) designed to survive alone on another planet. That question — how do you build a machine that genuinely acts in the world — pulled him through cognitive neuroscience, computer vision, and into generative AI. Now he applies the same question to cinema: how do you build something synthetic that genuinely feels.</p>
+      <p class="team-bio">His journey into AI began in philosophy — specifically with Masanao Toda's thought experiment about autonomous agents. That question pulled him through cognitive neuroscience, computer vision, and into generative AI. Now he applies the same question to cinema: how do you build something synthetic that genuinely feels.</p>
     </div>
     <div class="team-item">
       <div class="team-portrait">LV</div>
       <div>
-        <h3 class="team-name"><em>Luisa <em>Valender</em></h3>
+        <h3 class="team-name">Luisa Valender</h3>
         <p class="team-role">Creative Producer</p>
       </div>
-      <p class="team-bio">Her intellectual home is the edge of language — she wrote her thesis on Wittgenstein, the philosopher who argued that what cannot be said must be shown. Cinema, for her, is the logical conclusion of that insight. Trained in philosophy and film, she built El Olvidado — The Forgotten One — from an idea into a place people chose as their own. She produces with the same instinct: find what words cannot carry, and make space for it.</p>
+      <p class="team-bio">Her intellectual home is the edge of language — she wrote her thesis on Wittgenstein, the philosopher who argued that what cannot be said must be shown. Cinema is the logical conclusion of that insight. She built El Olvidado from an idea into a place people chose as their own.</p>
     </div>
     <div class="team-item">
       <div class="team-portrait">CN</div>
       <div>
-        <h3 class="team-name">Clemente <em>Núñez</em></h3>
+        <h3 class="team-name">Clemente Núñez</h3>
         <p class="team-role">Screenwriter & Story Editor</p>
       </div>
-      <p class="team-bio">He started where all good storytellers do: asking big questions — in philosophy. And ended up in the newsroom. He spent years writing about politics and culture, then serving as deputy news editor in radio and TV. A career spent finding the story inside the noise. Now he brings that instinct to the screen.</p>
+      <p class="team-bio">He started where all good storytellers do: asking big questions. He spent years writing about politics and culture, then serving as deputy news editor in radio and TV. A career spent finding the story inside the noise. Now he brings that instinct to the screen.</p>
     </div>
     <div class="team-item">
       <div class="team-portrait">OS</div>
       <div>
-        <h3 class="team-name">Oliver <em>Sierra</em></h3>
+        <h3 class="team-name">Oliver Sierra</h3>
         <p class="team-role">AI Engineer</p>
       </div>
-      <p class="team-bio">He started where few engineers do: inside the human mind. Studied psychology and computer science together. His research in game theory gave him a framework for understanding systems, human or otherwise. Now he applies that to the hardest technical problem in AI cinema: making generated video that actually holds together. He is the one pushing the limits of what the machine can show.</p>
+      <p class="team-bio">He started where few engineers do: inside the human mind. Studied psychology and computer science together. His research in game theory gave him a framework for understanding systems. He is the one pushing the limits of what the machine can show.</p>
     </div>
     <div class="team-item">
-      <div class="team-portrait">LB</div>
+      <div class="team-portrait">LO</div>
       <div>
-        <h3 class="team-name">Leslie <em>Orozco</em></h3>
+        <h3 class="team-name">Leslie Orozco</h3>
         <p class="team-role">Brand Strategist</p>
       </div>
-      <p class="team-bio">She has always worked at the edge of strategy and intuition — where a brand stops being a logo and starts being something you remember. Founder of Lemon Studio, Leslie specializes in branding, lettering, and large-scale murals for brands that want to be felt, not just seen. Her philosophy is simple: less noise, more feeling.</p>
+      <p class="team-bio">She has always worked at the edge of strategy and intuition — where a brand stops being a logo and starts being something you remember. Founder of Lemon Studio. Her philosophy is simple: less noise, more feeling.</p>
     </div>
-  </div>
-</section>
-<section id="approach">
-  <p class="section-label">Our Approach</p>
-  <div class="approach-grid">
-    <div class="approach-item">
-      <p class="approach-number">01</p>
-      <h3 class="approach-title">Write <em>first,</em><br>generate second.</h3>
-      <p class="approach-body">Every film begins with a script and a storyboard. The story drives the machine — not the other way around. We are storytellers who happen to use AI as our camera.</p>
-    </div>
-    <div class="approach-item">
-      <p class="approach-number">02</p>
-      <h3 class="approach-title">Consistent <em>worlds,</em><br>consistent souls.</h3>
-      <p class="approach-body">Character consistency across AI-generated shots is a hard technical problem. We solve it through fine-tuned character models and a rigorous production pipeline built in-house.</p>
-    </div>
-    <div class="approach-item">
-      <p class="approach-number">03</p>
-      <h3 class="approach-title">Made to <em>feel</em><br>something.</h3>
-      <p class="approach-body">The measure of every frame is not technical quality but emotional truth. If it doesn't move you, it doesn't ship. That standard guides everything — from the prompt to the color grade.</p>
+    <div class="team-item">
+      <div class="team-portrait">JW</div>
+      <div>
+        <h3 class="team-name">Julia Wypyszynski</h3>
+        <p class="team-role">AI Video Artist</p>
+      </div>
+      <p class="team-bio">She grew up surrounded by blueprints and natural light — an architect's family gave her the eye, and painting gave her the hand. A Master's in Food Innovation taught her something unexpected: that creativity is a discipline of disruption. Now she turns that instinct on the frame, coaxing the latent space into images that feel like they were always there.</p>
     </div>
   </div>
 </section>
 
 <!-- DEBUT -->
-<section id="debut" class="debut">
-  <p class="section-label">First Work</p>
+<section id="debut">
+  <p class="section-label"><span class="lnum">04 —</span>&nbsp;First Work</p>
   <div class="debut-inner">
     <div class="debut-frame">
+      <div class="debut-frame-bg"></div>
+      <div class="debut-frame-grid"></div>
+      <div class="debut-scan"></div>
       <div class="debut-corner tl"></div>
       <div class="debut-corner tr"></div>
       <div class="debut-corner bl"></div>
       <div class="debut-corner br"></div>
-      <span class="debut-frame-label">In Production</span>
+      <div class="debut-center">
+        <div class="debut-play">▶</div>
+        <span class="debut-frame-label">Frame 001 — In Production</span>
+      </div>
     </div>
     <div>
-      <h2 class="debut-title">Our debut short film is <em>in development.</em></h2>
+      <h2 class="debut-title">Our debut short is <em>in development.</em></h2>
       <p class="debut-text">A 2–3 minute proof of concept exploring a single character, a single environment, and a story that earns its final image. Built to stress-test our pipeline and establish our visual voice.</p>
       <div class="debut-status">
         <div class="debut-dot"></div>
@@ -737,11 +1028,11 @@
 
 <!-- CONTACT -->
 <section id="contact">
-  <p class="section-label">Get in Touch</p>
+  <p class="section-label"><span class="lnum">05 —</span>&nbsp;Get in Touch</p>
   <div class="contact-inner">
     <div>
       <h2 class="contact-title">Let's make something <em>real.</em></h2>
-      <p class="contact-sub">We are open to conversations about co-production, distribution, commissioned work, and collaboration. We are based in Amsterdam and work across European and Latin American markets.</p>
+      <p class="contact-sub">We are open to conversations about co-production, distribution, commissioned work, and collaboration. Based in Amsterdam, working across European and Latin American markets.</p>
     </div>
     <form class="contact-form" onsubmit="handleSubmit(event)">
       <div class="form-field">
@@ -757,8 +1048,7 @@
         <textarea rows="4" placeholder="Tell us what you have in mind."></textarea>
       </div>
       <button type="submit" class="form-submit">
-        Send Message
-        <span class="form-arrow">→</span>
+        Send Message <span>→</span>
       </button>
     </form>
   </div>
@@ -766,27 +1056,36 @@
 
 <footer>
   <span class="footer-copy">© 2026 35 Labs. Amsterdam, Netherlands.</span>
-  <span class="footer-location">48°52′N 2°21′E &nbsp;·&nbsp; 19°02′N 99°05′W</span>
+  <span class="footer-loc">52°22′N 4°54′E &nbsp;·&nbsp; 19°02′N 99°05′W</span>
 </footer>
 
 <script>
+  // Scroll reveal
   const sections = document.querySelectorAll('section');
-  const observer = new IntersectionObserver((entries) => {
+  const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
         e.target.classList.add('visible');
-        observer.unobserve(e.target);
+        io.unobserve(e.target);
       }
     });
-  }, { threshold: 0.1 });
-  sections.forEach(s => observer.observe(s));
+  }, { threshold: 0.07 });
+  sections.forEach(s => io.observe(s));
 
+  // Hero parallax
+  const heroBg = document.getElementById('heroBg');
+  window.addEventListener('scroll', () => {
+    if (heroBg) heroBg.style.transform = `translateY(${window.scrollY * 0.38}px)`;
+  }, { passive: true });
+
+  // Form
   function handleSubmit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('.form-submit');
-    btn.textContent = 'Message sent ✓';
-    btn.style.background = 'var(--ink)';
-    btn.style.color = 'var(--paper)';
+    btn.innerHTML = 'Message Sent ✓';
+    btn.style.background = 'transparent';
+    btn.style.color = 'var(--accent)';
+    btn.style.border = '1px solid var(--accent)';
   }
 </script>
 </body>
