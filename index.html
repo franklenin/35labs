@@ -6,23 +6,28 @@
 <title>35 Labs — AI Film Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<!-- FONTS: Cormorant Garamond (display/titles) + DM Sans (body) + JetBrains Mono (labels) -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DESIGN TOKENS — edit these to restyle everything
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 :root {
-  --bg:        #0e0e18;
-  --surface:   #161622;
-  --border:    rgba(255,255,255,0.10);
-  --text:      #f0f0ea;
-  --muted:     #8888a0;
-  --accent:    #aaff00;
+  --bg:        #0e0e18;       /* page background */
+  --surface:   #161622;       /* card / raised surface background */
+  --border:    rgba(255,255,255,0.10); /* divider lines and borders */
+  --text:      #f0f0ea;       /* primary text color */
+  --muted:     #8888a0;       /* secondary / dimmed text (bios, paragraphs) */
+  --accent:    #aaff00;       /* lime green accent (labels, highlights) */
   --warm:      #e05535;
   --glow-g:    rgba(170,255,0,0.10);
   --glow-w:    rgba(224,85,53,0.07);
-  --sans:      'Syne', sans-serif;
-  --mono:      'JetBrains Mono', monospace;
+  --sans:      'DM Sans', system-ui, sans-serif;  /* body text font */
+  --display:   'Cormorant Garamond', Georgia, serif; /* display / title font */
+  --mono:      'JetBrains Mono', monospace;         /* labels, nav links, section numbers */
 }
 
 html { scroll-behavior: smooth; }
@@ -60,7 +65,9 @@ body::after {
   z-index: 899;
 }
 
-/* ─── NAV ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   NAV — top fixed navigation bar
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -126,7 +133,9 @@ nav {
 
 .nav-cta:hover { background: var(--accent); color: var(--bg); }
 
-/* ─── HERO ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HERO — full-screen opening section
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .hero {
   min-height: 100vh;
   position: relative;
@@ -210,8 +219,8 @@ nav {
   align-items: center;
   gap: 0.75rem;
   font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   color: var(--muted);
   z-index: 10;
   border: 1px solid var(--border);
@@ -255,19 +264,21 @@ nav {
 }
 
 .hero-title {
-  font-size: clamp(4rem, 7.5vw, 11rem);   /* original 9.5vw*/
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.045em;
+  font-family: var(--display);
+  font-size: clamp(4rem, 7.5vw, 11rem); /* "The Hidden Daydream" — clamp(min, fluid, max) */
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
   color: var(--text);
   max-width: 14ch;
   margin-bottom: 3.5rem;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .hero-title .hl {
   color: var(--accent);
   display: block;
+  font-style: italic;
 }
 
 .hero-meta {
@@ -279,7 +290,7 @@ nav {
 
 .hero-sub {
   font-family: var(--mono);
-  font-size: 0.82rem;  /* original 0.92rem*/
+  font-size: 0.84rem; /* "Moving image from the latent space…" */
   font-weight: 300;
   letter-spacing: 0.14em;
   color: var(--muted);
@@ -330,8 +341,8 @@ nav {
   gap: 2rem;
   padding: 0 2rem;
   font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
+  font-size: 0.7rem; /* scrolling ticker band text */
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
@@ -364,9 +375,9 @@ section.visible {
 
 .section-label {
   font-family: var(--mono);
-  font-size: 0.58rem;
-  font-weight: 300;
-  letter-spacing: 0.28em;
+  font-size: 0.78rem; /* "01 — Manifesto", "02 — Our Approach" etc. */
+  font-weight: 400;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 4rem;
@@ -384,28 +395,31 @@ section.visible {
   background: var(--border);
 }
 
-/* ─── MANIFESTO ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MANIFESTO — section 01, the 4 paragraphs
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .manifesto-pull {
+  font-family: var(--display);
   font-size: clamp(2rem, 4.2vw, 4rem);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   color: var(--text);
-  max-width: 20ch;
+  max-width: 22ch;
   margin-bottom: 4rem;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .manifesto-pull em {
   color: var(--accent);
-  font-style: normal;
+  font-style: italic;
 }
 
 .manifesto-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem 5rem;
-  font-size: 0.92rem;
+  font-size: 0.95rem; /* the other 3 manifesto paragraphs */
   color: var(--muted);
   line-height: 1.95;
   border-top: 1px solid var(--border);
@@ -413,11 +427,13 @@ section.visible {
 }
 
 .manifesto-intro {
-  font-size: 1.1rem;
+  font-size: 0.95rem; /* first paragraph "35 Labs is an AI-native…" */
   color: var(--fg);
 }
 
-/* ─── APPROACH ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   APPROACH — section 02, three columns (Write First etc.)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .approach-grid {
   display: grid;
   grid-template-columns: repeat(3,1fr);
@@ -459,26 +475,27 @@ section.visible {
 
 .approach-number {
   font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
+  font-size: 0.82rem; /* "01 / Write First", "02 / Consistency", "03 / Emotion" */
+  letter-spacing: 0.14em;
   color: var(--accent);
   margin-bottom: 2.5rem;
   display: block;
 }
 
 .approach-title {
-  font-size: 1.55rem;
-  font-weight: 800;
+  font-family: var(--display);
+  font-size: 1.8rem; /* "Story Drives the Machine" etc. */
+  font-weight: 500;
   line-height: 1.18;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
   color: var(--text);
   margin-bottom: 1.5rem;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .approach-title em {
   color: var(--accent);
-  font-style: normal;
+  font-style: italic;
 }
 
 .approach-body {
@@ -487,7 +504,9 @@ section.visible {
   line-height: 1.9;
 }
 
-/* ─── TEAM ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TEAM — section 03, people cards (name, role, bio)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(3,1fr);
@@ -541,32 +560,36 @@ section.visible {
 }
 
 .team-name {
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: var(--display);
+  font-size: 1.4rem; /* "Frank Sierra", "Luisa Valender" etc. */
+  font-weight: 500;
+  letter-spacing: 0.01em;
   line-height: 1.2;
   color: var(--text);
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 0.2rem;
 }
 
 .team-role {
   font-family: var(--mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.18em;
+  font-size: 0.72rem; /* "Founder & Technical Director" etc. */
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 0.75rem;
 }
 
 .team-bio {
-  font-size: 0.8rem;
+  font-size: 0.85rem; /* biography paragraphs */
+  font-weight: 300;
   color: var(--muted);
-  line-height: 1.85;
+  line-height: 1.9;
   flex: 1;
 }
 
-/* ─── DEBUT ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DEBUT — section 04, first film / in production
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .debut-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -658,18 +681,19 @@ section.visible {
 }
 
 .debut-title {
+  font-family: var(--display);
   font-size: clamp(1.8rem,3.2vw,3.2rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   color: var(--text);
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 1.5rem;
 }
 
 .debut-title em {
   color: var(--accent);
-  font-style: normal;
+  font-style: italic;
 }
 
 .debut-text {
@@ -701,7 +725,9 @@ section.visible {
   animation: pulse 2.4s ease-in-out infinite;
 }
 
-/* ─── CONTACT ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CONTACT — section 05, get in touch form
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .contact-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -710,18 +736,19 @@ section.visible {
 }
 
 .contact-title {
+  font-family: var(--display);
   font-size: clamp(2rem,3.8vw,4rem);
-  font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
   color: var(--text);
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 1.5rem;
 }
 
 .contact-title em {
   color: var(--accent);
-  font-style: normal;
+  font-style: italic;
 }
 
 .contact-sub {
@@ -761,8 +788,8 @@ section.visible {
 
 .form-field label {
   font-family: var(--mono);
-  font-size: 0.52rem;
-  letter-spacing: 0.24em;
+  font-size: 0.72rem; /* "Your Name", "Email", "Message" */
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -804,7 +831,9 @@ section.visible {
 
 .form-submit:hover { background: #c6ff22; }
 
-/* ─── FOOTER ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FOOTER
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 footer {
   padding: 1.5rem 3rem;
   display: flex;
@@ -820,7 +849,9 @@ footer {
   color: var(--muted);
 }
 
-/* ─── RESPONSIVE ─── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE — mobile overrides (max-width: 768px)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 900px) {
   nav { padding: 1rem 1.5rem; }
   .nav-links { display: none; }
