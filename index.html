@@ -255,7 +255,7 @@ nav {
 }
 
 .hero-title {
-  font-size: clamp(4rem, 9.5vw, 11rem);
+  font-size: clamp(4rem, 7.5vw, 11rem);   /* original 9.5vw*/
   font-weight: 800;
   line-height: 0.9;
   letter-spacing: -0.045em;
@@ -279,7 +279,7 @@ nav {
 
 .hero-sub {
   font-family: var(--mono);
-  font-size: 0.92rem;
+  font-size: 0.82rem;  /* original 0.92rem*/
   font-weight: 300;
   letter-spacing: 0.14em;
   color: var(--muted);
@@ -410,6 +410,11 @@ section.visible {
   line-height: 1.95;
   border-top: 1px solid var(--border);
   padding-top: 3rem;
+}
+
+.manifesto-intro {
+  font-size: 1.1rem;
+  color: var(--fg);
 }
 
 /* ─── APPROACH ─── */
@@ -914,7 +919,7 @@ footer {
     Every image that ever existed <em>lives hidden</em> in mathematical space, waiting to be dreamed into form.
   </p>
   <div class="manifesto-body">
-    <p>35 Labs is an AI-native film studio based in Amsterdam. We make animated short films using generative models — not as a gimmick, but as a genuine medium with its own aesthetic language.</p>
+    <p class="manifesto-intro">35 Labs is an AI-native film studio based in Amsterdam. We make animated short films using generative models — not as a gimmick, but as a genuine medium with its own aesthetic language.</p>
     <p>We believe the frontier between human imagination and machine synthesis is where the most interesting cinema is being made right now. We are building there, frame by frame.</p>
     <p>Our work is directed by humans who understand both the emotional logic of storytelling and the mathematical logic of diffusion models. The result is something neither could make alone.</p>
     <p>We make cinema for the Netherlands and Mexico — two cultures with a deep appetite for visual storytelling and an openness to the genuinely new.</p>
